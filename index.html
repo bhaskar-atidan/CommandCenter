@@ -6,6 +6,19 @@
 <title>IT Hub — Command Centre</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+.CanvasComponent,
+  .CanvasZone,
+  .ControlZone {
+    width:100% !important;
+  max-width:100% !important;
+  }
+
+  .CanvasComponent,
+  .ControlZone {
+    margin:0 !important;
+  padding:0 !important;
+  }
+  
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0a0e17;
@@ -53,7 +66,7 @@ body::before{
   background:linear-gradient(135deg,#0a1628 0%,#0f2040 50%,#0a1628 100%);
   border:1px solid var(--border2);
   border-radius:8px;padding:40px 48px;
-  margin-bottom:24px;position:relative;overflow:hidden;
+  margin-bottom:0 0 24px 0;position:relative;overflow:hidden;
   animation:fadeUp .6s ease both;
 }
 .hero::before{

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Hub — Command Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e17;
+  --bg2:#0f1520;
+  --bg3:#141c2e;
+  --card:#111827;
+  --card2:#161f30;
+  --border:#1e2d47;
+  --border2:#243553;
+  --accent:#00d4ff;
+  --accent2:#0099cc;
+  --green:#00e676;
+  --yellow:#ffd740;
+  --red:#ff5252;
+  --orange:#ff9100;
+  --purple:#7c4dff;
+  --text:#e8f0fe;
+  --text2:#8899bb;
+  --text3:#4a5a7a;
+  --mono:'JetBrains Mono',monospace;
+  --display:'Syne',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── BACKGROUND GRID ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;opacity:.3;pointer-events:none;z-index:0;
+}
+
+.page{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:24px}
+
+/* ── HERO BANNER ── */
+.hero{
+  background:linear-gradient(135deg,#0a1628 0%,#0f2040 50%,#0a1628 100%);
+  border:1px solid var(--border2);
+  border-radius:8px;padding:40px 48px;
+  margin-bottom:24px;position:relative;overflow:hidden;
+  animation:fadeUp .6s ease both;
+}
+.hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:320px;height:320px;
+  background:radial-gradient(circle,rgba(0,212,255,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-40px;left:200px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(124,77,255,.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-label{font-size:11px;font-weight:500;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.hero-label::before{content:'';width:24px;height:1px;background:var(--accent)}
+.hero-title{font-family:var(--display);font-size:38px;font-weight:800;line-height:1.1;margin-bottom:8px}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:13px;color:var(--text2);max-width:480px;line-height:1.6;margin-bottom:28px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{padding:10px 22px;background:var(--accent);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;border:none;border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s}
+.btn-primary:hover{background:#33ddff;transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,212,255,.3)}
+.btn-outline{padding:10px 22px;background:transparent;color:var(--accent);font-family:var(--mono);font-size:12px;font-weight:600;border:1px solid var(--border2);border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s}
+.btn-outline:hover{border-color:var(--accent);background:rgba(0,212,255,.06)}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.hero-stat{text-align:left}
+.hero-stat-num{font-family:var(--display);font-size:28px;font-weight:700;color:var(--accent)}
+.hero-stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.hero-right{position:absolute;right:48px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;opacity:.6}
+@media(max-width:900px){.hero-right{display:none}}
+.terminal-line{font-size:11px;color:var(--accent);display:flex;gap:8px;align-items:center}
+.terminal-line::before{content:'>';color:var(--text3)}
+
+/* ── SECTION LABEL ── */
+.section-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── STATUS GRID ── */
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:900px){.status-grid{grid-template-columns:repeat(2,1fr)}}
+.status-card{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:20px;position:relative;overflow:hidden;
+  animation:fadeUp .6s ease both;
+  transition:border-color .2s,transform .2s;
+}
+.status-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.status-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.status-card.ok::before{background:var(--green)}
+.status-card.warn::before{background:var(--yellow)}
+.status-card.crit::before{background:var(--red)}
+.status-card.info::before{background:var(--accent)}
+.status-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px}
+.status-card.ok .status-icon{background:rgba(0,230,118,.1);color:var(--green)}
+.status-card.warn .status-icon{background:rgba(255,215,64,.1);color:var(--yellow)}
+.status-card.crit .status-icon{background:rgba(255,82,82,.1);color:var(--red)}
+.status-card.info .status-icon{background:rgba(0,212,255,.1);color:var(--accent)}
+.status-val{font-family:var(--display);font-size:26px;font-weight:700;margin-bottom:2px}
+.status-card.ok .status-val{color:var(--green)}
+.status-card.warn .status-val{color:var(--yellow)}
+.status-card.crit .status-val{color:var(--red)}
+.status-card.info .status-val{color:var(--accent)}
+.status-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.status-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:20px;margin-top:8px;font-weight:500}
+.badge-ok{background:rgba(0,230,118,.1);color:var(--green)}
+.badge-warn{background:rgba(255,215,64,.1);color:var(--yellow)}
+.badge-crit{background:rgba(255,82,82,.1);color:var(--red)}
+.pulse{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite}
+.pulse.ok{background:var(--green)}
+.pulse.warn{background:var(--yellow)}
+.pulse.crit{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── MAIN GRID ── */
+.main-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;margin-bottom:24px}
+@media(max-width:1000px){.main-grid{grid-template-columns:1fr}}
+
+/* ── CARD BASE ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;animation:fadeUp .6s ease both}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;justify-content:space-between}
+.card-title{font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.05em;display:flex;align-items:center;gap:8px}
+.card-title-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.card-action{font-size:11px;color:var(--accent);cursor:pointer;text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
+.card-action:hover{color:#33ddff}
+.card-body{padding:20px}
+
+/* ── ANNOUNCEMENTS ── */
+.announcement{padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:14px;align-items:flex-start}
+.announcement:last-child{border-bottom:none;padding-bottom:0}
+.ann-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.ann-dot.critical{background:var(--red)}
+.ann-dot.warning{background:var(--yellow)}
+.ann-dot.info{background:var(--accent)}
+.ann-dot.success{background:var(--green)}
+.ann-title{font-size:13px;font-weight:500;margin-bottom:3px;color:var(--text)}
+.ann-meta{font-size:11px;color:var(--text3)}
+.ann-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:3px;margin-left:6px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.tag-crit{background:rgba(255,82,82,.15);color:var(--red)}
+.tag-maint{background:rgba(255,145,0,.15);color:var(--orange)}
+.tag-new{background:rgba(0,212,255,.15);color:var(--accent)}
+.tag-done{background:rgba(0,230,118,.15);color:var(--green)}
+
+/* ── SERVICE HEALTH ── */
+.service-list{display:flex;flex-direction:column;gap:0}
+.service-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px}
+.service-row:last-child{border-bottom:none}
+.service-name{flex:1;color:var(--text2)}
+.service-uptime{font-size:11px;color:var(--text3);width:44px;text-align:right}
+.bar-wrap{width:80px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.bar-green{background:var(--green)}
+.bar-yellow{background:var(--yellow)}
+.bar-red{background:var(--red)}
+.svc-status{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ── QUICK LINKS ── */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick-link{
+  background:var(--card2);border:1px solid var(--border);border-radius:6px;
+  padding:14px;cursor:pointer;transition:all .2s;text-decoration:none;
+  display:flex;align-items:center;gap:10px;
+}
+.quick-link:hover{border-color:var(--accent);background:rgba(0,212,255,.04);transform:translateY(-1px)}
+.quick-icon{width:32px;height:32px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.quick-label{font-size:12px;color:var(--text);font-weight:500}
+.quick-sub{font-size:10px;color:var(--text3);margin-top:1px}
+
+/* ── TICKETS ── */
+.ticket-list{display:flex;flex-direction:column;gap:0}
+.ticket{padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start}
+.ticket:last-child{border-bottom:none}
+.ticket-id{font-size:10px;color:var(--text3);font-weight:500;width:56px;flex-shrink:0}
+.ticket-body{flex:1}
+.ticket-title{font-size:12px;color:var(--text);margin-bottom:3px}
+.ticket-meta{font-size:10px;color:var(--text3)}
+.ticket-badge{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.tb-open{background:rgba(0,212,255,.1);color:var(--accent)}
+.tb-progress{background:rgba(255,145,0,.1);color:var(--orange)}
+.tb-review{background:rgba(124,77,255,.1);color:var(--purple)}
+.tb-resolved{background:rgba(0,230,118,.1);color:var(--green)}
+
+/* ── BOTTOM GRID ── */
+.bottom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:24px}
+@media(max-width:900px){.bottom-grid{grid-template-columns:1fr}}
+
+/* ── CHART BAR ── */
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;border-radius:3px 3px 0 0;background:var(--accent);opacity:.7;transition:opacity .2s}
+.chart-bar:hover{opacity:1}
+.chart-bar.alt{background:var(--purple)}
+.chart-label{font-size:9px;color:var(--text3);text-transform:uppercase}
+.chart-legend{display:flex;gap:16px;margin-top:8px}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text3)}
+
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px}
+.cal-day{text-align:center;font-size:10px;padding:4px 2px;border-radius:3px;cursor:pointer;transition:background .15s}
+.cal-day:hover{background:var(--border)}
+.cal-day.header{color:var(--text3);cursor:default}
+.cal-day.header:hover{background:none}
+.cal-day.today{background:var(--accent);color:#000;font-weight:700}
+.cal-day.event{background:rgba(124,77,255,.2);color:var(--purple)}
+.cal-day.past{color:var(--text3)}
+.cal-event-list{display:flex;flex-direction:column;gap:6px}
+.cal-event{display:flex;gap:8px;align-items:flex-start;font-size:11px}
+.cal-event-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.cal-event-title{color:var(--text2)}
+.cal-event-time{color:var(--text3);font-size:10px}
+
+/* ── MY APPS ── */
+.apps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.app-item{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s}
+.app-item:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.app-emoji{font-size:24px;margin-bottom:6px}
+.app-name{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── FOOTER ── */
+.wp-footer{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--text3)}
+.wp-footer a{color:var(--text3);text-decoration:none}
+.wp-footer a:hover{color:var(--accent)}
+.footer-links{display:flex;gap:20px}
+
+/* ── WEB PART LABEL ── */
+.wp-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;opacity:.6}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.delay-1{animation-delay:.1s}
+.delay-2{animation-delay:.2s}
+.delay-3{animation-delay:.3s}
+.delay-4{animation-delay:.4s}
+.delay-5{animation-delay:.5s}
+.delay-6{animation-delay:.6s}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HERO (Banner Web Part) ── -->
+  <div class="wp-label">📌 Hero / Banner Web Part</div>
+  <div class="hero">
+    <div class="hero-label">IT Operations Centre</div>
+    <h1 class="hero-title">Welcome to<br><span>IT Hub</span></h1>
+    <p class="hero-sub">Your central command for technology services, support, and infrastructure across the organisation.</p>
+    <div class="hero-actions" style="margin-bottom:32px">
+      <button class="btn-primary">🎫 Raise a Ticket</button>
+      <button class="btn-outline">📋 Service Catalogue</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">99.7%</div><div class="hero-stat-label">Uptime</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">142</div><div class="hero-stat-label">Open Tickets</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">4.2h</div><div class="hero-stat-label">Avg Resolution</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">18</div><div class="hero-stat-label">Engineers On-Call</div></div>
+    </div>
+    <div class="hero-right">
+      <div class="terminal-line">systems.status = "operational"</div>
+      <div class="terminal-line">uptime.check() → 99.7%</div>
+      <div class="terminal-line">tickets.open → 142</div>
+      <div class="terminal-line">deploy.pipeline → running</div>
+      <div class="terminal-line">backup.last → 2h ago</div>
+    </div>
+  </div>
+
+  <!-- ── STATUS CARDS (Quick Chart / KPI Web Parts) ── -->
+  <div class="wp-label">📊 KPI / Quick Chart Web Parts</div>
+  <div class="status-grid">
+    <div class="status-card ok delay-1">
+      <div class="status-icon">🟢</div>
+      <div class="status-val">99.7%</div>
+      <div class="status-label">System Uptime</div>
+      <div class="status-badge badge-ok"><div class="pulse ok"></div>All Systems Operational</div>
+    </div>
+    <div class="status-card warn delay-2">
+      <div class="status-icon">⚠️</div>
+      <div class="status-val">142</div>
+      <div class="status-label">Open Tickets</div>
+      <div class="status-badge badge-warn"><div class="pulse warn"></div>12 High Priority</div>
+    </div>
+    <div class="status-card crit delay-3">
+      <div class="status-icon">🔴</div>
+      <div class="status-val">3</div>
+      <div class="status-label">Critical Alerts</div>
+      <div class="status-badge badge-crit"><div class="pulse crit"></div>Requires Attention</div>
+    </div>
+    <div class="status-card info delay-4">
+      <div class="status-icon">🔵</div>
+      <div class="status-val">8</div>
+      <div class="status-label">Scheduled Changes</div>
+      <div class="status-badge" style="background:rgba(0,212,255,.1);color:var(--accent)">This Week</div>
+    </div>
+  </div>
+
+  <!-- ── MAIN GRID ── -->
+  <div class="main-grid">
+    <div style="display:flex;flex-direction:column;gap:24px">
+
+      <!-- Announcements (News Web Part) -->
+      <div class="wp-label">📰 News Web Part</div>
+      <div class="card delay-1">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-icon">📢</div>Announcements & Alerts</div>
+          <a class="card-action" href="#">View All →</a>
+        </div>
+        <div class="card-body">
+          <div class="announcement">
+            <div class="ann-dot critical"></div>
+            <div>
+              <div class="ann-title">Exchange Online — Intermittent Delays <span class="ann-tag tag-crit">Critical</span></div>
+              <div class="ann-meta">Investigating email delivery delays affecting ~200 users · Posted 1h ago by NOC Team</div>
+            </div>
+          </div>
+          <div class="announcement">
+            <div class="ann-dot warning"></div>
+            <div>
+              <div class="ann-title">Scheduled Maintenance — ERP System <span class="ann-tag tag-maint">Maintenance</span></div>
+              <div class="ann-meta">Sat 22 Mar 00:00–04:00 AEDT · SAP will be unavailable · Posted 2d ago</div>
+            </div>
+          </div>
+          <div class="announcement">
+            <div class="ann-dot info"></div>
+            <div>
+              <div class="ann-title">New: Copilot for Microsoft 365 Now Live <span class="ann-tag tag-new">New</span></div>
+              <div class="ann-meta">All staff can now access Copilot in Teams, Word and Outlook · Posted 3d ago</div>
+            </div>
+          </div>
+          <div class="announcement">
+            <div class="ann-dot success"></div>
+            <div>
+              <div class="ann-title">Azure AD MFA Rollout — Complete <span class="ann-tag tag-done">Done</span></div>
+              <div class="ann-meta">All 1,240 accounts now enrolled in MFA · Zero exceptions remaining · Posted 5d ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticket Queue (List Web Part) -->
+      <div class="wp-label">📋 List Web Part</div>
+      <div class="card delay-2">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-icon">🎫</div>My Open Tickets</div>
+          <a class="card-action" href="#">ServiceNow →</a>
+        </div>
+        <div class="card-body">
+          <div class="ticket-list">
+            <div class="ticket">
+              <div class="ticket-id">#INC-4821</div>
+              <div class="ticket-body">
+                <div class="ticket-title">VPN intermittently dropping on Windows 11</div>
+                <div class="ticket-meta">Assigned: Sarah K · Updated 20m ago</div>
+              </div>
+              <div class="ticket-badge tb-progress">In Progress</div>
+            </div>
+            <div class="ticket">
+              <div class="ticket-id">#REQ-2204</div>
+              <div class="ticket-body">
+                <div class="ticket-title">New MacBook Pro setup for onboarding — Finance</div>
+                <div class="ticket-meta">Assigned: James T · Updated 1h ago</div>
+              </div>
+              <div class="ticket-badge tb-open">Open</div>
+            </div>
+            <div class="ticket">
+              <div class="ticket-id">#CHG-0812</div>
+              <div class="ticket-body">
+                <div class="ticket-title">Firewall rule update — DMZ to Production VLAN</div>
+                <div class="ticket-meta">Assigned: You · Pending CAB approval</div>
+              </div>
+              <div class="ticket-badge tb-review">In Review</div>
+            </div>
+            <div class="ticket">
+              <div class="ticket-id">#INC-4799</div>
+              <div class="ticket-body">
+                <div class="ticket-title">Printer offline — Level 3 South wing</div>
+                <div class="ticket-meta">Assigned: Mike R · Updated 3h ago</div>
+              </div>
+              <div class="ticket-badge tb-resolved">Resolved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div style="display:flex;flex-direction:column;gap:24px">
+
+      <!-- Service Health (custom list) -->
+      <div class="wp-label">🩺 Service Health Web Part</div>
+      <div class="card delay-1">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-icon">💚</div>Service Health</div>
+          <a class="card-action" href="#">Details</a>
+        </div>
+        <div class="card-body" style="padding:16px">
+          <div class="service-list">
+            <div class="service-row"><div class="svc-status" style="background:var(--green)"></div><div class="service-name">Microsoft 365</div><div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div><div class="service-uptime">100%</div></div>
+            <div class="service-row"><div class="svc-status" style="background:var(--green)"></div><div class="service-name">Azure Portal</div><div class="bar-wrap"><div class="bar-fill bar-green" style="width:99%"></div></div><div class="service-uptime">99%</div></div>
+            <div class="service-row"><div class="svc-status" style="background:var(--yellow)"></div><div class="service-name">Exchange Online</div><div class="bar-wrap"><div class="bar-fill bar-yellow" style="width:94%"></div></div><div class="service-uptime">94%</div></div>
+            <div class="service-row"><div class="svc-status" style="background:var(--green)"></div><div class="service-name">SharePoint Online</div><div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div><div class="service-uptime">100%</div></div>
+            <div class="service-row"><div class="svc-status" style="background:var(--green)"></div><div class="service-name">Teams</div><div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div><div class="service-uptime">100%</div></div>
+            <div class="service-row"><div class="svc-status" style="background:var(--red)"></div><div class="service-name">Cisco VPN</div><div class="bar-wrap"><div class="bar-fill bar-red" style="width:81%"></div></div><div class="service-uptime">81%</div></div>
+            <div class="service-row"><div class="svc-status" style="background:var(--green)"></div><div class="service-name">SAP ERP</div><div class="bar-wrap"><div class="bar-fill bar-green" style="width:98%"></div></div><div class="service-uptime">98%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links (Quick Links Web Part) -->
+      <div class="wp-label">🔗 Quick Links Web Part</div>
+      <div class="card delay-3">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-icon">⚡</div>Quick Access</div>
+        </div>
+        <div class="card-body">
+          <div class="quick-grid">
+            <a class="quick-link" href="#"><div class="quick-icon">🎫</div><div><div class="quick-label">ServiceNow</div><div class="quick-sub">Raise ticket</div></div></a>
+            <a class="quick-link" href="#"><div class="quick-icon">🔐</div><div><div class="quick-label">Password Reset</div><div class="quick-sub">Self service</div></div></a>
+            <a class="quick-link" href="#"><div class="quick-icon">📱</div><div><div class="quick-label">MDM Portal</div><div class="quick-sub">Device mgmt</div></div></a>
+            <a class="quick-link" href="#"><div class="quick-icon">☁️</div><div><div class="quick-label">Azure Portal</div><div class="quick-sub">Cloud admin</div></div></a>
+            <a class="quick-link" href="#"><div class="quick-icon">📊</div><div><div class="quick-label">Power BI</div><div class="quick-sub">Dashboards</div></div></a>
+            <a class="quick-link" href="#"><div class="quick-icon">📚</div><div><div class="quick-label">IT Knowledge</div><div class="quick-sub">Self-help</div></div></a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── BOTTOM ROW ── -->
+  <div class="bottom-grid">
+
+    <!-- Ticket Volume Chart (Quick Chart Web Part) -->
+    <div>
+      <div class="wp-label">📈 Quick Chart Web Part</div>
+      <div class="card delay-1">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-icon">📈</div>Ticket Volume · 7d</div>
+          <a class="card-action" href="#">Report →</a>
+        </div>
+        <div class="card-body">
+          <div class="chart-bars">
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:40%"></div><div class="chart-label">Mon</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:65%"></div><div class="chart-label">Tue</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:55%"></div><div class="chart-label">Wed</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:80%"></div><div class="chart-label">Thu</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:70%"></div><div class="chart-label">Fri</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar alt" style="height:20%"></div><div class="chart-label">Sat</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar alt" style="height:15%"></div><div class="chart-label">Sun</div></div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Weekday</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Weekend</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar (Events Web Part) -->
+    <div>
+      <div class="wp-label">📅 Events Web Part</div>
+      <div class="card delay-2">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-icon">📅</div>IT Calendar — March</div>
+          <a class="card-action" href="#">View All</a>
+        </div>
+        <div class="card-body">
+          <div class="cal-grid">
+            <div class="cal-day header">M</div><div class="cal-day header">T</div><div class="cal-day header">W</div><div class="cal-day header">T</div><div class="cal-day header">F</div><div class="cal-day header">S</div><div class="cal-day header">S</div>
+            <div class="cal-day past">3</div><div class="cal-day past">4</div><div class="cal-day past">5</div><div class="cal-day past">6</div><div class="cal-day past">7</div><div class="cal-day past">8</div><div class="cal-day past">9</div>
+            <div class="cal-day past">10</div><div class="cal-day past">11</div><div class="cal-day past">12</div><div class="cal-day past">13</div><div class="cal-day past">14</div><div class="cal-day past">15</div><div class="cal-day past">16</div>
+            <div class="cal-day today">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day event">20</div><div class="cal-day">21</div><div class="cal-day event">22</div><div class="cal-day">23</div>
+            <div class="cal-day">24</div><div class="cal-day event">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day event">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+          </div>
+          <div class="cal-event-list">
+            <div class="cal-event"><div class="cal-event-dot" style="background:var(--purple)"></div><div><div class="cal-event-title">CAB Meeting</div><div class="cal-event-time">Thu 20 Mar · 10:00am</div></div></div>
+            <div class="cal-event"><div class="cal-event-dot" style="background:var(--orange)"></div><div><div class="cal-event-title">ERP Maintenance Window</div><div class="cal-event-time">Sat 22 Mar · 12:00am</div></div></div>
+            <div class="cal-event"><div class="cal-event-dot" style="background:var(--accent)"></div><div><div class="cal-event-title">IT All-Hands</div><div class="cal-event-time">Tue 25 Mar · 2:00pm</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Apps (Quick Links) -->
+    <div>
+      <div class="wp-label">🧩 My Apps / Quick Links Web Part</div>
+      <div class="card delay-3">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-icon">🧩</div>My Applications</div>
+          <a class="card-action" href="#">All Apps →</a>
+        </div>
+        <div class="card-body">
+          <div class="apps-grid">
+            <div class="app-item"><div class="app-emoji">📧</div><div class="app-name">Outlook</div></div>
+            <div class="app-item"><div class="app-emoji">💬</div><div class="app-name">Teams</div></div>
+            <div class="app-item"><div class="app-emoji">📊</div><div class="app-name">Power BI</div></div>
+            <div class="app-item"><div class="app-emoji">☁️</div><div class="app-name">Azure</div></div>
+            <div class="app-item"><div class="app-emoji">🛡️</div><div class="app-name">Defender</div></div>
+            <div class="app-item"><div class="app-emoji">🔧</div><div class="app-name">Intune</div></div>
+            <div class="app-item"><div class="app-emoji">📋</div><div class="app-name">Planner</div></div>
+            <div class="app-item"><div class="app-emoji">🎫</div><div class="app-name">ServiceNow</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer (Text Web Part) -->
+  <div class="wp-label">📝 Text Web Part</div>
+  <div class="wp-footer">
+    <div>IT Operations · Last updated: 17 Mar 2025 09:14 · <span style="color:var(--green)">● All systems nominal</span></div>
+    <div class="footer-links">
+      <a href="#">IT Policy</a>
+      <a href="#">Service Catalogue</a>
+      <a href="#">Support Portal</a>
+      <a href="#">Security Hub</a>
+      <a href="#">Contact NOC</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
